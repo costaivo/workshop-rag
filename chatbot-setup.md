@@ -2,6 +2,14 @@
 
 This guide walks you through building a Streamlit chatbot that talks to your RAG API. By the end, you'll have a chat interface where users can ask questions and see answers with source citations.
 
+The application is built in **three phases**:
+
+1. **Setup** — Project structure, environment, and base configuration.
+2. **Chatbot** — Session state, sidebar, chat UI, and conversation flow (with a placeholder response).
+3. **RAG integration** — Connect to your RAG API, call `/ask`, and display answers with source citations.
+
+---
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -13,7 +21,9 @@ Before starting, ensure you have:
 
 ---
 
-## Phase 1: Project Setup
+## Phase 1: Setup
+
+Get the project and app skeleton ready: directory, virtual environment, dependencies, and initial `app.py` with configuration and styling.
 
 ### 1. Create the Chatbot Directory
 Create a folder for the chatbot app (e.g. next to your RAG project or inside the same repo).
@@ -55,12 +65,8 @@ chatbot/
 └── requirements.txt
 ```
 
----
-
-## Phase 2: Configuration & Page Setup
-
-### 5. Set API Base URL and Page Config
-At the top of `app.py`, define where your RAG backend lives and how the page appears.
+### 5. Configuration and Page Config
+Create `app.py` and add imports, API base URL, and Streamlit page config at the top.
 ```python
 import streamlit as st
 import requests
@@ -100,9 +106,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 ```
 
+At this point you can run `streamlit run app.py`; the page will load with title and styling but no chat yet.
+
 ---
 
-## Phase 3: Session State & Sidebar
+## Phase 2: Chatbot
+
+Build the chat UI: session state for conversation history, sidebar with controls, main area with title and chat history, and chat input. Use a **placeholder** assistant response so the conversation flow works before we connect to the RAG API.
 
 ### 7. Initialize Chat History in Session State
 Streamlit reruns the script on every interaction. Use `st.session_state` to keep chat history across reruns.
@@ -112,10 +122,10 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 ```
 
-Each message can be a dict: `{"role": "user"|"assistant", "content": "...", "sources": [...]}` (sources only for assistant).
+Each message is a dict: `{"role": "user"|"assistant", "content": "...", "sources": [...]}` (sources only for assistant).
 
 ### 8. Build the Sidebar
-Put retrieval parameters and controls in the sidebar.
+Put retrieval parameters and controls in the sidebar. The Status section will show backend state once RAG is integrated.
 ```python
 # --- Sidebar ---
 with st.sidebar:
@@ -144,13 +154,9 @@ with st.sidebar:
         st.caption("Ensure the RAG API is running on port 8000")
 ```
 
-*   **k_chunks** and **score_threshold** are sent with each `/ask` request so the user can tune retrieval without restarting.
+*   **k_chunks** and **score_threshold** will be sent with each `/ask` request once RAG is integrated.
 
----
-
-## Phase 4: Main Interface — Title and Chat History
-
-### 9. Title and Caption
+### 9. Main Interface — Title and Caption
 ```python
 # --- Main Interface ---
 st.title(f"{PAGE_ICON} {PAGE_TITLE}")
@@ -164,7 +170,6 @@ Loop over `st.session_state.messages` and show each message; show sources for as
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        # If there are sources attached to an assistant message, display them
         if "sources" in message and message["sources"]:
             with st.expander("📚 View Sources", expanded=False):
                 for idx, source in enumerate(message["sources"], 1):
@@ -178,25 +183,46 @@ for message in st.session_state.messages:
 
 *   Adjust `source['source']`, `source['page']`, and `source['score']` if your API returns different field names.
 
----
-
-## Phase 5: Chat Input and API Call
-
-### 11. Chat Input and Send User Message
-Use `st.chat_input` so the user types in the chat bar. On submit, append the user message and show it.
+### 11. Chat Input and Placeholder Assistant Response
+Use `st.chat_input` so the user types in the chat bar. On submit, append the user message, show it, then add a **placeholder** assistant reply so the conversation flow works. In Phase 3 we'll replace this with the real RAG API call.
 ```python
 # Chat Input
 if prompt := st.chat_input("What would you like to know?"):
-    # 1. Add User Message
+    # 1. Add and show user message
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
+
+    # 2. Placeholder assistant response (replace in Phase 3 with RAG API call)
+    with st.chat_message("assistant"):
+        placeholder_reply = "_(RAG response will appear here once integrated.)_"
+        st.markdown(placeholder_reply)
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": placeholder_reply,
+        "sources": []
+    })
 ```
 
-### 12. Call the RAG API and Show the Response
-In the same `if prompt` block, open an assistant chat message, show a spinner, then POST to `/ask` and display the answer and sources.
+Run the app now: you can type messages and see them with a placeholder reply. Next, we wire in the real RAG API.
+
+---
+
+## Phase 3: RAG Integration
+
+Replace the placeholder assistant response with a real call to your RAG API: send the user's question and retrieval parameters, then display the answer and sources (or errors).
+
+### 12. Call the RAG API and Display the Response
+Replace the placeholder block (the `# 2. Placeholder assistant response` section) with the following. It POSTs to `/ask`, shows a spinner, and renders the answer and sources.
 ```python
-    # 2. Get Assistant Response
+# Chat Input
+if prompt := st.chat_input("What would you like to know?"):
+    # 1. Add and show user message
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # 2. Get assistant response from RAG API
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         full_response = ""
@@ -241,37 +267,35 @@ In the same `if prompt` block, open an assistant chat message, show a spinner, t
                 error_msg = f"❌ An error occurred: {str(e)}"
                 message_placeholder.error(error_msg)
                 full_response = error_msg
-```
 
-### 13. Persist the Assistant Reply in Session State
-After the API call, append the assistant message (and sources) so it appears in history on the next rerun.
-```python
-    # 3. Add Assistant Message to History
+    # 3. Persist assistant message in session state
     st.session_state.messages.append({
-        "role": "assistant", 
+        "role": "assistant",
         "content": full_response,
         "sources": sources
     })
 ```
 
+The sidebar **Status** (from Phase 2) already uses `API_BASE_URL` for the health check, so you can confirm the backend is reachable before asking questions.
+
 ---
 
-## Phase 6: Run & Test
+## Run & Test
 
-### 14. Start the RAG API (if not already running)
+### 13. Start the RAG API (if not already running)
 From your RAG project directory:
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 Confirm that `GET http://localhost:8000/api/v2/health` returns 200.
 
-### 15. Start the Chatbot
+### 14. Start the Chatbot
 From the **chatbot** directory:
 ```bash
 streamlit run app.py
 ```
 
-### 16. Use the Chatbot
+### 15. Use the Chatbot
 1.  Open the URL Streamlit prints (e.g. `http://localhost:8313`).
 2.  Check the sidebar: **Status** should show "Backend Online ✅".
 3.  Type a question in the chat input and press Enter.
@@ -279,7 +303,10 @@ streamlit run app.py
 5.  Use **Clear Chat History** to reset the conversation.
 6.  Adjust **Number of Chunks (k)** and **Similarity Threshold** and ask again to see how retrieval behavior changes.
 
+---
+
 ## Conclusion
+
 You now have a RAG-powered chatbot that:
 *   Keeps conversation history in Streamlit session state.
 *   Lets users tune retrieval (k, score threshold) from the sidebar.
