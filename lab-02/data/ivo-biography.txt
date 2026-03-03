@@ -1,0 +1,148 @@
+# Ivo Costa - Professional Biography
+Linkedin Profile : https://www.linkedin.com/in/ivo-costa/
+
+## Overview
+Ivo Costa is the **Director of Development Services at Creative Capsule**, based in South Goa, India. With over **20 years of experience** in the software industry, he has built a reputation for designing robust applications and leading technical teams. He combines deep technical expertise with strategic leadership in operations and engineering. Additionally, Ivo is widely recognized as an **exceptional mentor**, known for his ability to **simplify complex concepts** and play a pivotal role in **shaping the careers** of developers through his supportive guidance and teaching.
+
+## Professional Experience
+
+### Creative Capsule (Apr 2022 - Present)
+**Role:** Director of Development Services
+*   Leads development operations and strategy for the organization.
+*   Focuses on delivering high-quality IT services and consulting solutions.
+*   **Department:** Operations
+*   **Location:** Goa, India
+
+### Creative Capsule (Sep 2018 - Nov 2022)
+**Role:** System Architect
+*   Architected complex systems and provided technical leadership for engineering teams.
+*   Instrumental in designing scalable solutions for enterprise clients.
+*   Actively mentored developers, fostering their technical growth and problem-solving skills.
+*   **Department:** Engineering and Technical
+
+### ZettaByte Pte. Ltd. (Oct 2017 - Jul 2018)
+**Role:** Project Manager
+*   Managed project lifecycles and delivery for software initiatives.
+*   **Department:** Project Management
+
+### Earlier Career
+*   **Team Lead / Sr. Team Lead** at Creative Capsule (Feb 2012 - Oct 2017).
+*   **Software Developer (Intern to Senior)** at Immo Information Technology Pvt Ltd (Feb 2005 - Jan 2012), working on software for the Swiss real estate market.
+
+## Technical Skills
+Ivo has extensive hands-on experience across full-stack development, specializing in:
+*   **Backend:** .NET (C#), Python (Django), NodeJS, NestJS.
+*   **Frontend:** JavaScript, TypeScript, React, Angular, Vue.js.
+*   **Cloud & Architecture:** System Design, AWS Cloud Infrastructure.
+
+## Education & Certifications
+*   **Education:** Bachelor's degree from Visvesvaraya Technological University (2002 - 2005).
+*   **Certifications:**
+    *   AWS Certified Cloud Practitioner (2019)
+    *   MCAD: Microsoft .NET (2008)
+    *   MCPS: Microsoft Certified Professional (2007)
+
+## Personal Interests
+*   **Passions:** Loves coding and enjoys complex problem-solving.
+*   **Hobbies:** Cycling, Running.
+
+## Recommendations
+
+### Summary
+Ivo is widely celebrated as an **exceptional mentor and technical leader** who has profoundly impacted the careers of numerous developers. Across nearly two decades of testimonials, colleagues consistently highlight his **deep technical expertise**, **passion for teaching**, and **problem-solving prowess**. Whether as a Team Lead, Architect, or Director, Ivo is described as a **"go-to person"** for complex challenges, known for his ability to **simplify intricate concepts** and foster a strong technical foundation in his teams. His leadership style is characterized by **supportive guidance**, **rigorous attention to detail**, and a **visionary approach** to project architecture. Mentees and peers alike praise his **dedication**, **work ethic**, and **methodical nature**, often citing him as an invaluable asset and a role model who not only delivers robust solutions but also actively nurtures talent and team spirit.
+
+### Individual Recommendations
+
+**1. Shaunak Bale**
+*Software Developer | Oracle Certified Generative AI Professional | Python | Fast API | Generative AI, RAG, LLM | Prompt Engineer | LangGraph | LangChain | MySQL*
+> "During the early stages of my career, Ivo was my mentor and played a crucial role in shaping me as a developer. His guidance and support helped me build a strong foundation in technology and development. He is highly tech-savvy and has an in-depth understanding of various technologies, making him a go-to person for problem-solving and technical advice. His ability to simplify complex concepts and provide clear direction made a significant impact on my learning journey. I truly appreciate his mentorship, and his expertise makes him an invaluable asset to any team."
+
+**2. Kamakshi Pai Fondekar**
+*Tech Lead at IBM, Bengaluru | C# | .NET Core | Angular | React JS*
+> "I have worked under Ivo as developer on a few projects at Creative Capsule Infotech. I would say I have learnt a lot from him. He is one of the most talented developers I know. He has very good teaching skills."
+
+**3. Presley Dias**
+*Client Group Director, Software Services at Creative Capsule | Garden Studio Goa*
+> "It's not every day that you come across a person with the grasping power like Ivo. I have worked with Ivo on multiple projects as a developer under him and as a Manager. Ivo has been helping us on tweaking our project architecture whenever we require. Teaching is his passion, and he has helped numerous interns and developers working on their coding skills. As a team member or a leader, Ivo earns my highest recommendation."
+
+**4. Rakesh Pardeshi**
+*Purpose-driven FCC Model Risk Management Professional | Financial Crime Compliance | Anti Money Laundering (AML) Analytics | AI/ML, NLP, GenAI Model Validation*
+> "I rarely come across real talents who stand out like Ivo. I had the pleasure of working with Ivo for two years at IMMO. I was impressed by Ivo’s ability to deal with even the toughest tasks – effortlessly. That skill often takes years to develop among consulting professionals, but it seemed to come perfectly naturally to him. Ivo would be an asset to any company."
+
+**5. Christian Mugnier**
+*Strategic Partnership at ZettaByte Pte Ltd*
+> "Ivo is a great professional with rigorous attention to details. I personally enjoyed working with Ivo knowing I could count on him anytime."
+
+**6. Mark D'Souza**
+*Associate Director Delivery at IE Company*
+> "Working with Ivo during my time at CCI was lovely. Ivo is very methodical with his ways of work and strives for improvement. He also helped others in his team be it with coding practices or helping with better ways of working. Ivo is a smart and kind person and would love to work again with him given the opportunity."
+
+**7. Sumit Vekariya**
+*AI Ethics & Safety | Decentralised Identity | Verifiable Credentials*
+> "Before talking about Ivo as a project manager, Ivo is a very good human being. He is a great asset any company can have. I started my career under his guidance, and him as a project manager, He is a very dedicated and hardworking person. He identified my technical skills and nurtured them and also taught me some useful life lessons. He is a true guide, He helped me achieve & overcome so many things. And also he took the enterprise level project which we were working on to the next level by passing and going through many hurdles and he never gave up. Thanks Ivo."
+
+**8. Vijay Dubey**
+*Project Manager at CMS Info Systems Ltd.*
+> "I Worked with Ivo on multiple projects. He has strong technical, managerial and communication skill. He always takes the ownership of the work and completes on time. He has strong Analytical and problem solving skills. Always open to learn about new technology and skill which differentiates him from others. It was pleasure working with Ivo and would definitely recommend him for any major leadership role."
+
+**9. Arhad Riantoro**
+*One game at a time!*
+> "As Project Manager Ivo is very good at doing his job. He is not just good at managing project but also good keeping the team spirit and moral together. his ability to do coaching and mentoring is best. he can turn your fresh graduate to a full-fledged developer. the other remarkable ability is he had vision on how a project will be heading this ability can help him anticipate what will happen for the project in the future and make the correct preparation to anticipate it."
+
+**10. Samruddhi Shenvi Borker**
+*Senior Software Developer | 6+ Years of Experience in Delivering Innovative Solutions*
+> "I had the privilege of working with Ivo in "Creative Capsule Infotech". Ivo is proactive, result oriented, responsible and technically sound person and he is always ready to put all his energy and time to get the job done. He has helped me learn and develop skills in .net. His management,teaching and tech skills are impressive.I feel he would be a great asset to any organization."
+
+**11. Brandon D'Souza**
+*Senior Software Engineer @ OnScreen | Full Stack | Problem Solver*
+> "I've worked with Ivo for over 2 years. He's an awesome team leader, always tries to bring out the best in each team member. He takes initiative to recognize and resolve issues as they arise and improves the performance of the team. Ivo keeps himself updated, learning about the latest technologies and also shares his learnings. I would definitely recommend Ivo for any major leadership role."
+
+**12. Utkarsh Bandekar**
+*Software Architect | Technical Project Manager | Cloud Solutions Expert | 18 Years in IT*
+> "I have had the pleasure of knowing Ivo for the past 2.5 years working in CCI. Deadline oriented person. Independent and customer focused strategist. Innovative perfectionist always ready to put all his energy and stamina to get the job done."
+
+**13. Swarupa Vengurlekar**
+*Consulting CTO @ ProfoundIQ | Helping companies build and scale tech with clarity and speed through our CTO-as-a-Service model | 19+ years of technical experience*
+> "I had the privilege of working with Ivo at Creative Capsule. Ivo is a well organised leader and a good trainer He has an excellent problem solving and technical skills. He takes the ownership of the projects and always meets the deadline. Person who will always keep himself updated with the latest technology and proactive in sharing the knowledge. He would be an asset to any company."
+
+**14. NILESH MATKARI**
+*Sr. Director, Engineering at Creative Capsule*
+> "While working along side Ivo Costa on multiple projects, I found him to be tech savvy, one of the few very good coders that I have come across, an excellent taskmaster, always willing to look for product improvement. One of the passion common to both of us is flair for training and mentoring junior staff which Ivo enjoyed immensely. I am sure he will be an excellent resource to any assignment he takes over."
+
+**15. Krishna PrabhuGaonkar**
+*Team Lead Front End Engineering Team*
+> "Ivo is a great mentor, motivator & good leader. He understands his team members strengths and weaknesses & guides them in the right direction. He has really strong knowledge about his domain. He is always curious to learn new technologies and keeps himself updated. Whatever project he is working on, he ensures that it meets all the standards, projects are completed within the deadline & also motivates & guides his team to do the same."
+
+**16. Joao Lawrence Fernandes**
+*Seasoned Team Manager | Expert BI Practitioner | Proficient Cloud Data Engineer | Python Automation Specialist focused on ML*
+> "Ivo is highly qualified, knowledgeable person with insights on software development principles and patterns. He is a great teacher, a good leader, team player and a motivator, having inspired me and many other people in his teams. He has great understanding of one's capabilities. I have worked under Ivo for 6 months. During this time, he has helped me grow professionally and improve my skills. He ensures all the standards and deadlines are met for the projects he is working on."
+
+**17. Zohaib Mulla**
+*PSM I | IT Analyst at Al Futtaim Finance, Dubai.*
+> "Ivo’s career sketch speaks for itself. I have had this amazing opportunity to work under Ivo for a couple of years where I grew from a developer to a team lead. My journey was rightly guided by Ivo and I have learnt tremendously. Under Ivo I have not only grown professionally but also personally. He is a great teacher, motivator and an inspiration for many like me. He has always been supportive and understands his team’s strengths and weaknesses. Ivo is an astute professional with a high level focus and dedication towards his work. His work ethics and sincerity in office has never failed to impress me and this is one major factor why he is my role model. His hunger for knowledge turns out to be very useful trait to others working around him as he shares and ensures that his team members are up to date with the latest technologies and advancements in the market. Ivo is a perfect example of the saying “Choose Your Boss, Not Your Job”, for he shall definitely unlock your potential."
+
+**18. Prathamesh Mashelkar**
+*AWS|Typescript|node.js|python|SQL|Flutter|.NET*
+> "An amazing teacher with abundant knowledge to spare"
+
+**19. Akshay Naik**
+*Senior Lead - Software Architecture at ZS*
+> "I have worked with Ivo Costa for the past 1.5 years. I feel that Ivo is highly qualified for the position of Sr.Team Lead at Creative Capsule for several reasons.He is very passionate and has great vision for his work. His focus keeps everything moving smoothly, he makes sure all the deadlines are met, and makes sure that whatever project he is working on meets the highest standards."
+
+**20. Charles Studer**
+*Expert Consultant REPM (Real Estate Portfolio Management Standard Software) bei IAZI AG*
+> "I can definitly recommend Ivo Costa as a competent skilled IT worker."
+
+
+## Skills
+*   React
+*   Angular
+*   TypeScript
+*   .NET
+*   PostgreSQL
+*   MongoDB
+*   Problem Solving
+*   Software Development
+*   Docker
+*   Architect
+*   Trainer
