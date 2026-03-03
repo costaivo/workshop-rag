@@ -10,8 +10,8 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 # -------- GENERATE ANSWER --------
-def generate_answer(query, retrieved_chunks):
-
+def generate_answer(query, retrieved_chunks, genai_client=None):
+    client_to_use = genai_client or client
     context = "\n\n".join(retrieved_chunks)
 
     prompt = f"""
@@ -24,7 +24,7 @@ def generate_answer(query, retrieved_chunks):
     {query}
     """
 
-    response = client.models.generate_content(
+    response = client_to_use.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt
     )
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             break
 
         retrieved = retrieve(query, index, all_chunks, client)
-        answer = generate_answer(query, retrieved)
+        answer = generate_answer(query, retrieved, client)
 
         print("\nAnswer:\n")
         print(answer)
