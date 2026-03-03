@@ -37,6 +37,8 @@ if __name__ == "__main__":
 
     print("🔄 Ingesting documents...")
     all_chunks, index = run_ingestion("data", client)
+    print("✅ Ingestion complete.")
+    print("--------------------------------")
     print("✅ Ready. Ask your question.")
 
     while True:

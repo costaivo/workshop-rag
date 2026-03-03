@@ -10,6 +10,7 @@ def load_text_files(folder_path):
     documents = []
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
+            print(f"  - Loading {filename}...")
             with open(os.path.join(folder_path, filename), "r", encoding="utf-8") as f:
                 documents.append(f.read())
     return documents
@@ -19,6 +20,7 @@ def chunk_text(text, chunk_size=500, overlap=100):
     """Split text into overlapping chunks."""
     chunks = []
     start = 0
+    print(f"  - Chunking text of length {len(text)}...")
     while start < len(text):
         end = start + chunk_size
         chunks.append(text[start:end])
@@ -29,6 +31,7 @@ def chunk_text(text, chunk_size=500, overlap=100):
 def embed_texts(texts, client):
     """Turn chunk strings into vectors using the Gemini embedding API."""
     embeddings = []
+    print(f"  - Embedding {len(texts)} texts...")
     for text in texts:
         response = client.models.embed_content(
             model="gemini-embedding-001",
@@ -40,6 +43,7 @@ def embed_texts(texts, client):
 
 def create_faiss_index(embeddings):
     """Build a FAISS L2 index from embedding vectors."""
+    print(f"  - Creating FAISS index with {embeddings.shape[0]} embeddings...")
     dimension = embeddings.shape[1]
     index = faiss.IndexFlatL2(dimension)
     index.add(embeddings)
