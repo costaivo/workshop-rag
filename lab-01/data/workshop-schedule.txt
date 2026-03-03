@@ -1,0 +1,229 @@
+📅 4‑Day Workshop Schedule 
+
+Day 1 — Introduction to React & Component-Based Development
+9:45 – 10:15 — Inauguration
+
+DHE Representative
+HOD – CS
+Principal / Vice Principal
+Event Coordinators
+Resource Person
+
+10:15 – 10:30 — Tea Break
+
+10:30 – 12:00 — Introduction & Setup
+Topics:
+
+Overview of React & why it’s used
+Component‑based architecture
+Environment setup: Node.js, VS Code, create‑react‑app / Vite
+
+Hands-On:
+
+Initialize React project
+
+
+12:00 – 12:40 — React Basics
+Topics:
+
+JSX & Virtual DOM
+Function components, props, composition
+
+Hands-On:
+
+Build a simple reusable component
+
+
+12:40 – 1:00 — State & Events
+Topics:
+
+useState hook
+Handling events & updating UI
+Conditional rendering
+
+Hands-On:
+
+Counter or toggle widget
+
+1:00 – 2:00 — Lunch Break
+
+2:00 – 2:40 — Lists, Keys & Forms
+Topics:
+
+Rendering lists
+Why keys matter
+Controlled components (forms)
+
+Hands-On:
+
+Build a simple task list or input form
+
+
+2:40 – 3:20 — useEffect & Fetching Data
+Topics:
+
+useEffect for side effects
+Fetching data from an API
+Handling loading & error states
+
+Hands-On:
+
+Display API data (Pokémon / JSONPlaceholder)
+
+
+3:20 – 4:00 — Mini Project
+Examples:
+
+Weather Viewer
+Product List with Search
+Random Quote Viewer
+
+
+4:00 – 4:30 — Wrap‑Up & Q&A
+
+Recap of concepts
+Best practices
+Next steps: React Router, Context, Redux
+Debugging help
+
+
+Day 2 — Full‑Stack React: Backend Integration & Best Practices
+10:00 – 11:15 — Git (Talk & Hands‑On)
+
+Repos, commits, branches, merges
+GitHub workflow: clone, push, pull, PRs
+Meaningful commit messages
+.gitignore, branch strategy
+
+11:15 – 11:30 — Tea Break
+
+11:30 – 1:00 — Backend Setup & Connecting to React
+Topics:
+
+Node.js + Express basics
+REST API (GET, POST)
+CORS
+Folder structure: /routes, /controllers, /services
+Environment variables
+Error handling & light security
+
+Hands-On:
+
+Connect React frontend using fetch / useEffect
+
+1:00 – 2:00 — Lunch Break
+
+2:00 – 3:00 — Consuming Data in React + CRUD
+Topics:
+
+Build CRUD API endpoints (GET, POST, DELETE)
+Update React components for CRUD
+Folder organization
+Connect forms to backend
+Optional: frontend environment variables
+
+
+3:00 – 4:00 — Testing API & CRUD with Postman
+
+Installing & using Postman
+Testing endpoints (GET/POST/DELETE)
+Validate responses & status codes
+Postman collections
+Test 404, validation errors
+Light API documentation
+
+
+Day 3 — Modern Development Workflows & Cross‑Platform Apps
+10:00 – 11:15 — CI/CD & GitHub Actions
+
+CI vs CD
+GitHub Actions basics
+Automated test & build pipelines
+
+Hands-On:
+
+Build workflow to run tests + build React app
+Show build‑status badges
+Industry perspective: test-first & automation
+
+11:15 – 11:30 — Tea Break
+
+11:30 – 1:00 — Docker & Containerization Basics
+Topics:
+
+Images vs containers
+Dockerfile structure
+Containerizing Node.js / React apps
+
+Hands-On:
+
+Dockerize backend
+Use Docker Compose to run frontend + backend
+Benefits: portability, reproducibility, scaling
+
+1:00 – 2:00 — Lunch Break
+
+2:00 – 3:30 — React Native (Demonstration)
+
+Differences between React & React Native
+Components, styling, navigation
+Hot reloading
+
+Demo:
+
+Create a “Hello World” mobile app
+Fetch backend data
+Display list
+Add navigation
+
+Topics:
+
+Cross-platform development & code reuse
+
+
+3:30 – 4:00 — Wrap‑Up & Q&A
+
+Recap CI/CD, Docker, React Native
+Best practices
+Suggested mini‑projects combining all topics
+
+
+Day 4 — AI in Industry
+10:00 – 11:00 — Real World Usage & Case Studies
+Use Cases:
+
+Chatbots & virtual assistants
+Recommendation systems
+Fraud detection
+Healthcare diagnostics
+Smart manufacturing
+
+Case Studies:
+
+Netflix / Amazon
+Google Maps
+HR resume screening
+
+
+11:00 – 11:15 — Types of AI Used in Software Products
+
+Generative AI (text, images, code)
+Predictive AI
+Computer Vision
+NLP
+Recommendation Engines
+
+Who uses what?
+
+Frontend dev → AI APIs
+Backend dev → integration & security
+Data scientist → model building
+
+11:15 – 11:30 — Tea Break
+
+11:30 – 1:00 — Live Demonstration: RAG System
+
+Build a Retrieval‑Augmented Generation system
+End‑to‑end demo
+
+1:00 – 2:00 — Lunch Break
