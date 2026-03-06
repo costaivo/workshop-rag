@@ -2,35 +2,13 @@ import os
 from dotenv import load_dotenv
 from google import genai
 
+from generation import generate_answer
 from ingestion import run_ingestion
 from retrieval import retrieve
 
 # Load API key
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-
-# -------- GENERATE ANSWER --------
-def generate_answer(query, retrieved_chunks):
-
-    context = "\n\n".join(retrieved_chunks)
-
-    prompt = f"""
-    Answer the question using ONLY the context below.
-
-    Context:
-    {context}
-
-    Question:
-    {query}
-    """
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-
-    return response.text
-
 
 # -------- MAIN --------
 if __name__ == "__main__":
@@ -48,7 +26,7 @@ if __name__ == "__main__":
             break
 
         retrieved = retrieve(query, index, all_chunks, client)
-        answer = generate_answer(query, retrieved)
+        answer = generate_answer(query, retrieved, client)
 
         print("\nAnswer:\n")
         print(answer)

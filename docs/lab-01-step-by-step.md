@@ -77,6 +77,7 @@ lab-01/
 │   └── ivo-biography.txt
 ├── ingestion.py          # Load, chunk, embed, build index
 ├── retrieval.py          # Embed query, search index, return chunks
+├── generation.py         # Build prompt from chunks, call LLM for answer
 ├── app.py                # Main script: ingest → query loop → generate
 ├── requirements.txt
 └── .env                  # GOOGLE_API_KEY (create in Phase 2)
@@ -273,15 +274,17 @@ def retrieve(query, index, chunks, client, top_k=3):
 
 ## Phase 6: Generation and Main App
 
-The main script (`app.py`) loads the API key, runs ingestion once, then enters a loop: ask a question → retrieve chunks → generate an answer with the LLM → print the answer.
+Generation lives in **`generation.py`**: it builds a prompt from the retrieved chunks and calls the LLM. The main script (**`app.py`**) loads the API key, runs ingestion once, then enters a loop: ask a question → retrieve chunks → generate an answer → print the answer.
 
-### 6.1 Generate answer
+### 6.1 Generate answer (generation.py)
 
-**Purpose:** Have the LLM answer the question using **only** the retrieved chunks as context, to keep answers grounded in your documents.
+**Purpose:** Have the LLM answer the question using **only** the retrieved chunks as context, to keep answers grounded in your documents. The function takes the Gemini `client` as an argument so the module stays independent of configuration.
 
 ```python
-def generate_answer(query, retrieved_chunks):
-
+def generate_answer(query, retrieved_chunks, client):
+    """
+    Answer the question using only the retrieved chunks as context.
+    """
     context = "\n\n".join(retrieved_chunks)
 
     prompt = f"""
@@ -304,18 +307,29 @@ def generate_answer(query, retrieved_chunks):
 
 - Joins the retrieved chunks into one `context` string.
 - Builds a prompt that instructs the model to use only that context.
+- Takes `client` so the caller (e.g. `app.py`) passes the configured Gemini client.
 - Calls Gemini with `gemini-2.5-flash` and returns the generated text.
 
-### 6.2 Main program
+### 6.2 Main program (app.py)
 
-**Purpose:** Wire ingestion, retrieval, and generation into a single run: ingest once, then answer questions until the user types `exit`.
+**Purpose:** Wire ingestion, retrieval, and generation into a single run: ingest once, then answer questions until the user types `exit`. The app imports `generate_answer` from `generation` and passes `client` on each call.
 
 ```python
+from generation import generate_answer
+from ingestion import run_ingestion
+from retrieval import retrieve
+
+# Load API key
+load_dotenv()
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+
 # -------- MAIN --------
 if __name__ == "__main__":
 
     print("🔄 Ingesting documents...")
     all_chunks, index = run_ingestion("data", client)
+    print("✅ Ingestion complete.")
+    print("--------------------------------")
     print("✅ Ready. Ask your question.")
 
     while True:
@@ -325,14 +339,15 @@ if __name__ == "__main__":
             break
 
         retrieved = retrieve(query, index, all_chunks, client)
-        answer = generate_answer(query, retrieved)
+        answer = generate_answer(query, retrieved, client)
 
         print("\nAnswer:\n")
         print(answer)
 ```
 
+- Imports `generate_answer` from `generation`, plus `run_ingestion` and `retrieve`.
 - Runs `run_ingestion("data", client)` so `data/` is loaded, chunked, embedded, and indexed.
-- In a loop: read a question, retrieve top-K chunks, generate an answer, print it.
+- In a loop: read a question, retrieve top-K chunks, call `generate_answer(query, retrieved, client)`, print the answer.
 - Exits when the user types `exit`.
 
 ---
@@ -351,6 +366,8 @@ You should see:
 
 ```text
 🔄 Ingesting documents...
+✅ Ingestion complete.
+--------------------------------
 ✅ Ready. Ask your question.
 
 Ask (type 'exit' to quit):
@@ -378,7 +395,7 @@ The system will retrieve the relevant chunks and answer using only that context.
 | **3** | `.txt` documents in `data/` |
 | **4** | Ingestion: load → chunk → embed → FAISS index (`ingestion.py`) |
 | **5** | Retrieval: embed query → search index → top-K chunks (`retrieval.py`) |
-| **6** | Generation: prompt with context + question → LLM → answer (`app.py`) |
+| **6** | Generation: prompt with context + question → LLM → answer (`generation.py`); main loop in `app.py` |
 | **7** | Run `python app.py` and ask questions |
 
 You now have a working RAG pipeline: **documents → one-time ingestion → per-question retrieval → generation from context.** For a higher-level explanation of RAG, see `lab-01/rag-simplified.md`. For more detail on each code block and data flow, see `lab-01/rag-tutorial-basic.md`.
