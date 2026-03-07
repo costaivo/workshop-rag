@@ -6,25 +6,25 @@ A short guide for anyone new to the idea. No coding experience required.
 
 ## The problem: smart but out-of-date
 
-Imagine you have a really smart friend who read a huge set of books years ago. They can reason and write well, but they don’t know about *your* stuff: your class notes, your company’s policy doc, or the manual for the tool you’re using.
+You’ve probably used **ChatGPT** or **Gemini**: they’re great at explaining ideas and writing. But ask *“What’s the schedule for this workshop?”* or *“Who are the speakers and what are they covering?”* — and they can’t answer. Why? Because that information lives in *this* event’s materials: the agenda, the speaker list, the PDFs the organizers prepared. None of that was part of the model’s training data.
 
-If you ask: *“What’s our refund policy?”* they might guess or make something up, because that information wasn’t in their books.
+The model only “knows” what it was trained on. It has no access to the content of **your** session—this workshop, this course, this meeting—unless you give it that content. So if you ask about the current workshop’s schedule or speakers, it may guess or make something up, because that specific information was never in its training set.
 
-**Large language models (LLMs)** are a bit like that: very capable, but they only “know” what was in their training data. They don’t automatically know your private documents or the latest updates.
+**Large language models (LLMs)** are very capable, but they don’t automatically know your session materials, your documents, or your event details. That’s the problem RAG tries to fix.
 
 ---
 
 ## The idea: give the model the right page
 
-You don’t need to retrain the model. You just need to **find the right pieces of text** from your documents and **hand them to the model** when it answers.
+You don’t need to retrain the model. You just need to **find the right pieces of text** from your documents (e.g. the workshop agenda, speaker list) and **hand them to the model** when it answers.
 
 So instead of:
 
-- *“Answer from whatever you remember,”*
+- *“Answer from whatever you remember,”* (e.g. *“What’s the workshop schedule?”*)
 
 you do:
 
-- *“Here are the exact paragraphs that matter. Answer using only these.”*
+- *“Here are the exact paragraphs that matter—the agenda, the speaker bios. Answer using only these.”*
 
 The model stays the same; what changes is that you **feed it the right context** for each question. That’s the core of RAG.
 
@@ -34,7 +34,7 @@ The model stays the same; what changes is that you **feed it the right context**
 
 **RAG** = **R**etrieval **A**ugmented **G**eneration
 
-- **Retrieval** = search your documents and get back the most relevant bits.
+- **Retrieval** = search your workshop materials (agenda, speaker list, etc.) and get back the most relevant bits.
 - **Augmented** = you add that information to the question.
 - **Generation** = the model generates an answer (e.g. text).
 
@@ -46,13 +46,13 @@ So: **retrieve** the right text, **add** it to the question, then let the model 
 
 Think of a big textbook and its **index** at the back.
 
-1. **Index** = you don’t read the whole book to find “refund.” You look up “refund” in the index and get page numbers.
+1. **Index** = you don’t read the whole book to find “schedule” or “speakers.” You look them up in the index and get page numbers.
 2. **You go to those pages** and read the relevant paragraphs.
 3. **You answer** the question using only what you read there.
 
 RAG does the same thing, but with:
 
-- Your **documents** (instead of one textbook),
+- Your **workshop materials** (agenda, speaker list, handouts—instead of one textbook),
 - A **search system** that finds similar text (instead of a printed index),
 - An **AI model** that reads the retrieved text and writes the answer (instead of you).
 
@@ -64,9 +64,9 @@ You can picture the whole process in five steps.
 
 | Step | Name | What happens (in plain English) |
 |------|------|---------------------------------|
-| **1** | **Your documents** | You have files (e.g. notes, policies, manuals). This is the “book” the system will search. |
+| **1** | **Your documents** | You have the workshop materials (e.g. agenda, speaker bios, session handouts). This is the “book” the system will search. |
 | **2** | **Prepare (ingestion)** | The system cuts the documents into smaller pieces (chunks), turns each piece into a kind of “fingerprint” (embedding), and stores those fingerprints in a search index. This is done once (or when you add new docs). |
-| **3** | **You ask a question** | You type a question in normal language, e.g. “What is the refund policy?” |
+| **3** | **You ask a question** | You type a question in normal language, e.g. “What’s the workshop schedule?” or “Who are the speakers?” |
 | **4** | **Retrieval** | The system turns your question into the same kind of fingerprint, finds the chunks whose fingerprints are closest to it, and gives you those chunks. So you get “the right pages” for your question. |
 | **5** | **Generation** | The model receives your question plus those chunks and writes an answer using *only* that text. So the answer is grounded in your documents. |
 
@@ -82,7 +82,7 @@ Documents can be long. Models have a limit on how much text they can take at onc
 
 ### What’s an “embedding”?
 
-An **embedding** is a way to turn a piece of text into a list of numbers (a vector). The important part: **similar meanings get similar lists of numbers.** So “refund policy” and “money back” end up with similar vectors, and the search can find chunks that *mean* something close to the question, not just words that match.
+An **embedding** is a way to turn a piece of text into a list of numbers (a vector). The important part: **similar meanings get similar lists of numbers.** So “workshop schedule” and “session timetable” end up with similar vectors, and the search can find chunks that *mean* something close to the question, not just words that match.
 
 So we:
 

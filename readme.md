@@ -1,6 +1,11 @@
 # RAG Labs
 
-Hands-on labs for building **Retrieval-Augmented Generation (RAG)** systems. You learn by following step-by-step guides and running the code. Each lab builds on the previous one: a basic RAG pipeline (CLI), then a FastAPI service, then a Streamlit chatbot that talks to the API.
+Hands-on labs for building **Retrieval-Augmented Generation (RAG)** systems. 
+You learn by following step-by-step guides and running the code. 
+Each lab builds on the previous one: 
+- a basic RAG pipeline (CLI), 
+- then a FastAPI service, 
+- then a Streamlit chatbot that talks to the API.
 
 **Completed code** for each lab lives in the **`lab-0X`** folders (`lab-01`, `lab-02`, `lab-03`). Use the docs to understand and recreate the flow; use the lab folders as reference or to run the working implementation.
 
