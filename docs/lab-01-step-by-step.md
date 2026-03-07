@@ -250,6 +250,8 @@ Retrieval runs **for each question**. It embeds the query, searches the FAISS in
 **Purpose:** For a user question, get the K chunks whose embeddings are closest to the question’s embedding.
 
 ```python
+import numpy as np
+
 def retrieve(query, index, chunks, client, top_k=3):
     """
     Find the chunks most similar to the query.
@@ -315,6 +317,10 @@ def generate_answer(query, retrieved_chunks, client):
 **Purpose:** Wire ingestion, retrieval, and generation into a single run: ingest once, then answer questions until the user types `exit`. The app imports `generate_answer` from `generation` and passes `client` on each call.
 
 ```python
+import os
+from dotenv import load_dotenv
+from google import genai
+
 from generation import generate_answer
 from ingestion import run_ingestion
 from retrieval import retrieve
@@ -343,6 +349,7 @@ if __name__ == "__main__":
 
         print("\nAnswer:\n")
         print(answer)
+
 ```
 
 - Imports `generate_answer` from `generation`, plus `run_ingestion` and `retrieve`.
