@@ -1,0 +1,28 @@
+# Joshua Pereira - Professional Biography
+Linkedin Profile: https://www.linkedin.com/in/joshua-pereira-41294a133/
+
+## Overview
+Joshua Pereira is a **Junior Software Apps Engineer** at **Oqton**, based in Salcette, Goa, India. He has approximately **4 years and 8 months** of total experience in the software industry.
+
+## Professional Experience
+
+### Oqton (Dec 2023 - Present)
+*   **Junior Software Apps Engineer** (Jun 2024 - Present)
+*   **Junior Software Engineer** (Dec 2023 - May 2024)
+    *   Role: Specialist in Engineering and Technical department.
+
+### CtrlSave Pvt Ltd (Mar 2021 - Mar 2024)
+*   **Junior Full Stack Software Developer**
+    *   Experience: 3 years
+    *   Role: Specialist in Engineering and Technical department.
+
+## Education
+*   **Master of Science (M.Sc.) in Information Technology, Computer Software Engineering**
+    *   Smt. Parvatibai Chowgule Cultural Foundations College of Arts & Science Fatorda (2022 - 2024)
+*   **Bachelor's in Computer Science**
+    *   Parvatibai Chowgule College Arts And Science (Autonomous) (2019 - 2022)
+*   **Higher Secondary (12th), Computer Tech**
+    *   Ramacrisna Madeva Salgaocar Higher Secondary School (2017 - 2019)
+
+## Skills
+*   Software Development

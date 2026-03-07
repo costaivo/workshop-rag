@@ -147,6 +147,10 @@ Ingestion runs **once** (at startup in this project). It loads documents, splits
 **Purpose:** Read every `.txt` file in a folder and return a list of document strings so they can be chunked and embedded.
 
 ```python
+import os
+import numpy as np
+import faiss
+
 def load_text_files(folder_path):
     """Read all .txt files in folder; return list of document strings."""
     documents = []

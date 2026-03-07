@@ -1,0 +1,34 @@
+# Nikesh Singh - Professional Biography
+Linkedin Profile: https://www.linkedin.com/in/nikesh-singh-b3571116a/
+
+## Overview
+Nikesh Singh is a **Software Development Consultant** at **Oqton** and **3D Systems Corporation**, based in South Goa, India. He has **2 years and 11 months** of total experience in the software industry.
+
+## Professional Experience
+
+### Software Development Consultant (Jun 2024 - Present)
+*   **Oqton** (Consulting)
+*   **3D Systems Corporation** (Consulting)
+
+### Previous Roles
+*   **Junior Software Apps Engineer** at **Oqton** (Dec 2023 - May 2024)
+*   **Junior Software Apps Engineer** at **3D Systems Corporation** (Dec 2023 - May 2024)
+*   **React Native Developer** at **STRUGEND** (Apr 2023 - Sep 2023)
+*   **Full Stack Mern Developer** at **Kapslock.in** (Dec 2021 - Aug 2022)
+
+## Education
+*   **Master of Science (M.Sc.) in Information Technology**
+    *   Smt. Parvatibai Chowgule Cultural Foundations College of Arts & Science Fatorda (2022 - 2024)
+*   **Bachelor of Vocational Studies (BVoc), Software Development**
+    *   Smt. Parvatibai Chowgule Cultural Foundations College of Arts & Science Fatorda (2019 - 2022)
+    *   CGPA: 8.44
+
+## Skills
+*   React
+*   React Native
+*   TypeScript
+*   .NET
+*   PostgreSQL
+*   MongoDB
+*   Problem Solving
+*   Software Development
