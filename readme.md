@@ -19,9 +19,9 @@ Hands-on labs for building **Retrieval-Augmented Generation (RAG)** systems. You
 
 | Document | Description |
 |----------|-------------|
-| [Lab 01 — Step-by-Step](docs/lab-01-step-by-step.md) | Build a full RAG system: setup, ingestion (chunk + embed + FAISS), retrieval, generation, and a CLI question-answering loop. Code in `lab-01/`. |
-| [Lab 02 — Step-by-Step](docs/lab-02-step-by-step.md) | Same RAG pipeline plus a **FastAPI** server with a **POST /ask** endpoint. Run as CLI or API. Code in `lab-02/`. |
-| [Lab 03 — Step-by-Step](docs/lab-03-step-by-step.md) | **Streamlit** chatbot that calls the lab-02 API. Thin client; no RAG logic here. Code in `lab-03/`. |
+| [Lab 01](docs/lab-01-step-by-step.md) | Build a full RAG system: setup, ingestion (chunk + embed + FAISS), retrieval, generation, and a CLI question-answering loop. Code in `lab-01/`. |
+| [Lab 02](docs/lab-02-step-by-step.md) | Same RAG pipeline plus a **FastAPI** server with a **POST /ask** endpoint. Run as CLI or API. Code in `lab-02/`. |
+| [Lab 03](docs/lab-03-step-by-step.md) | **Streamlit** chatbot that calls the lab-02 API. Thin client; no RAG logic here. Code in `lab-03/`. |
 
 ---
 
