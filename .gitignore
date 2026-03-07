@@ -7,3 +7,27 @@
 # Virtual environments
 venv/
 **/venv/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Optional: generated index files (if you persist FAISS index to disk)
+# *.faiss
+# *.pkl
