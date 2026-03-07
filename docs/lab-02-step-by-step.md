@@ -45,7 +45,12 @@ pip install -r requirements.txt
 
 ### 1.3 New file: api.py
 
-You will add **`api.py`** — the FastAPI app with lifespan and **POST /ask**. The rest of the structure stays as in lab-01: `data/`, `ingestion.py`, `retrieval.py`, `app.py`, `.env`.
+You will add **`api.py`** — the FastAPI app with lifespan and **POST /ask**. The rest of the structure stays as in lab-01: 
+ - `data/`, 
+ - `ingestion.py`,
+ - `retrieval.py`, 
+ - `app.py`, 
+ - `.env`.
 
 ---
 
