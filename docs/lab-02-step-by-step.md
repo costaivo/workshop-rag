@@ -2,132 +2,66 @@
 
 **Prerequisite:** Complete **lab-01** first. You should have a working RAG pipeline (ingestion, retrieval, generation) that runs as a CLI.
 
-This guide adds a **FastAPI** server that exposes the same pipeline via **POST /ask**. You can then run the pipeline as a **CLI** (interactive loop) or as an **API** (HTTP) and connect other clients (e.g. lab-03 Streamlit) to it.
+This lab adds a **FastAPI** server so the same pipeline is exposed over HTTP via **POST /ask**. You keep the existing CLI and gain an API that other clients (e.g. lab-03 Streamlit) can call.
 
 ---
 
 ## Prerequisites
 
 - **Lab-01 completed** — Working RAG CLI, `.env` with `GOOGLE_API_KEY`, and data in `data/`.
-- **Python 3.10+** and your existing **Google AI (Gemini) API key**.
+- **Python 3.10+** and your existing Gemini API key.
 
 ---
 
-## Phase 1: Start from lab-01
+## Phase 1: Add dependencies and the API file
 
-Use your existing lab-01 project as the base. Either work in a **lab-02** copy of it or add the following to your lab-01 folder.
+Start from your lab-01 project (or a copy of it as `lab-02`). Reuse the same `.env`, `data/`, `ingestion.py`, `retrieval.py`, and `app.py`.
 
-### 1.1 Project directory
-
-If you prefer a separate lab-02 folder, copy your lab-01 directory (including `data/`, `ingestion.py`, `retrieval.py`, `app.py`, `.env`) to `lab-02` and work there. Otherwise, continue in lab-01.
-
-### 1.2 Dependencies
-
-Add FastAPI and uvicorn to your `requirements.txt`:
+**1. Add FastAPI and uvicorn** to `requirements.txt`:
 
 ```text
-# RAG pipeline dependencies (same as lab-01)
-numpy>=1.24.0
-faiss-cpu>=1.7.0
-python-dotenv>=1.0.0
-google-genai>=1.0.0
-
-# API (lab-02)
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
 ```
 
-Install the new packages (with your venv activated):
+Then install (with your venv activated):
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 1.3 New file: api.py
+**2. One small change in `app.py` (if needed):** Your `generate_answer` must accept an optional Gemini client so the API can pass its own. Use a signature like:
 
-You will add **`api.py`** — the FastAPI app with lifespan and **POST /ask**. The rest of the structure stays as in lab-01: 
- - `data/`, 
- - `ingestion.py`,
- - `retrieval.py`, 
- - `app.py`, 
- - `.env`.
+`generate_answer(query, retrieved_chunks, genai_client=None)` and inside use `client_to_use = genai_client or client`. If your lab-01 already has this, leave it as is.
+
+**3. Create the new file `api.py`** — this is the only new code for lab-02. It will use your existing `run_ingestion`, `retrieve`, and `generate_answer`.
 
 ---
 
-## Phase 2: Configuration and data
+## Phase 2: Implement the API layer
 
-- **Configuration** — Reuse your existing `.env` with `GOOGLE_API_KEY`. Both `app.py` (CLI) and `api.py` (API) load it; the API creates the Gemini client in its **lifespan** (Phase 4).
-- **Data** — Use the same **`data/`** folder and `.txt` files as in lab-01.
+Create **`api.py`** in the project root. It loads the index at startup (lifespan), then serves **POST /ask** by calling your existing retrieval and generation.
 
----
-
-## Phase 3: Ingestion and retrieval
-
-Lab-02 uses the **same** `ingestion.py` and `retrieval.py` as lab-01. No code changes are required there. For a full walkthrough of ingestion and retrieval, see **`docs/lab-01-step-by-step.md`**.
-
----
-
-## Phase 4: Generation and API layer
-
-Lab-02 adds two ways to use the pipeline: **CLI** (`app.py`) and **API** (`api.py`). Both reuse the same generation logic.
-
-### 4.1 Generate answer (app.py)
-
-**Purpose:** Have the LLM answer using **only** the retrieved chunks. The function accepts an optional Gemini client so the API can pass its own client.
+**Full `api.py`** (including imports):
 
 ```python
-def generate_answer(query, retrieved_chunks, genai_client=None):
-    client_to_use = genai_client or client
-    context = "\n\n".join(retrieved_chunks)
+"""FastAPI app exposing the RAG pipeline via /ask."""
 
-    prompt = f"""
-    Answer the question using ONLY the context below.
+import os
+from contextlib import asynccontextmanager
 
-    Context:
-    {context}
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
+from google import genai
+from pydantic import BaseModel
 
-    Question:
-    {query}
-    """
+from app import generate_answer
+from ingestion import run_ingestion
+from retrieval import retrieve
 
-    response = client_to_use.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+load_dotenv()
 
-    return response.text
-```
 
-- **CLI:** Calls `generate_answer(query, retrieved, client)`.
-- **API:** Calls `generate_answer(question, retrieved, client)` with the client stored in `app.state`.
-
-### 4.2 CLI main program (app.py)
-
-Same as lab-01: ingest once, then loop — read question, retrieve, generate, print. Exit with `exit`.
-
-```python
-if __name__ == "__main__":
-    print("🔄 Ingesting documents...")
-    all_chunks, index = run_ingestion("data", client)
-    print("✅ Ready. Ask your question.")
-
-    while True:
-        query = input("\nAsk (type 'exit' to quit): ")
-        if query.lower() == "exit":
-            break
-        retrieved = retrieve(query, index, all_chunks, client)
-        answer = generate_answer(query, retrieved, client)
-        print("\nAnswer:\n")
-        print(answer)
-```
-
-### 4.3 FastAPI app and lifespan (api.py)
-
-**Purpose:** Run ingestion **once** when the API server starts, store the client, chunks, and index in `app.state`, and expose **POST /ask**.
-
-**Lifespan:** On startup, create the Gemini client, run `run_ingestion("data", client)`, and attach the results to the FastAPI app so every request can use them.
-
-```python
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Load index and chunks at startup."""
@@ -139,25 +73,22 @@ async def lifespan(app: FastAPI):
     app.state.index = index
     print("✅ RAG index ready.")
     yield
-```
 
-**App and route:**
 
-- **Request body:** `{"question": "Your question here"}` (Pydantic model `AskRequest`).
-- **Response:** `{"answer": "..."}` (Pydantic model `AskResponse`).
-- Empty or whitespace-only questions return **400** with a detail message.
-
-```python
 app = FastAPI(title="RAG API", lifespan=lifespan)
+
 
 class AskRequest(BaseModel):
     question: str
 
+
 class AskResponse(BaseModel):
     answer: str
 
+
 @app.post("/ask", response_model=AskResponse)
 def ask(request: AskRequest):
+    """Run RAG: retrieve relevant chunks and generate an answer."""
     question = request.question.strip()
     if not question:
         raise HTTPException(status_code=400, detail="question must be non-empty")
@@ -171,15 +102,23 @@ def ask(request: AskRequest):
     return AskResponse(answer=answer)
 ```
 
+**What this does:**
+
+- **Imports** — FastAPI, lifespan, Pydantic for request/response, and your existing `generate_answer`, `run_ingestion`, `retrieve`.
+- **Lifespan** — On server start: create the Gemini client, run ingestion once, store `client`, `all_chunks`, and `index` on `app.state` so every request can use them.
+- **POST /ask** — Accepts `{"question": "..."}`; validates non-empty; runs retrieve → generate_answer; returns `{"answer": "..."}`. Empty questions return 400.
+
+No changes are needed in `ingestion.py` or `retrieval.py`; they are reused as in lab-01.
+
 ---
 
-## Phase 5: Run and test
+## Phase 3: Run and test
 
-You can run lab-02 in two ways: **CLI** or **API**.
+You can run the pipeline in two ways: **CLI** (unchanged from lab-01) or **API** (new).
 
-### 5.1 Run the CLI
+### 3.1 Run the CLI
 
-From the `lab-02` directory with the virtual environment activated:
+From the project directory (venv activated):
 
 ```bash
 python app.py
@@ -196,7 +135,7 @@ Ask (type 'exit' to quit):
 
 Type questions and press Enter; type `exit` to quit.
 
-### 5.2 Run the API
+### 3.2 Run the API
 
 Start the FastAPI server:
 
@@ -229,10 +168,8 @@ Keep the API running if you want to use **lab-03** (Streamlit chatbot), which ca
 
 | Phase | What you did |
 |-------|----------------|
-| **1** | Start from lab-01; add FastAPI and uvicorn to `requirements.txt`; plan to add `api.py` |
-| **2** | Reuse `.env` and `data/` from lab-01 |
-| **3** | Same ingestion and retrieval as lab-01 (no changes) |
-| **4** | Generation in `app.py` (optional client); CLI loop in `app.py`; FastAPI app in `api.py` with lifespan and **POST /ask** |
-| **5** | Run **CLI:** `python app.py` — or **API:** `uvicorn api:app --reload` and call **POST /ask** |
+| **1** | Add FastAPI and uvicorn to `requirements.txt`; ensure `generate_answer` accepts optional `genai_client`; create `api.py` |
+| **2** | Implement `api.py` with imports, lifespan (ingestion at startup), and **POST /ask** using existing retrieval and generation |
+| **3** | Run **CLI:** `python app.py` — or **API:** `uvicorn api:app --reload` and call **POST /ask** (e.g. http://127.0.0.1:8000/docs) |
 
-You now have a RAG pipeline that can be used from the command line or over HTTP. For the Streamlit chatbot that talks to this API, see **`docs/lab-03-step-by-step.md`**.
+You now have the same RAG pipeline available from the command line and over HTTP. For the Streamlit chatbot that calls this API, see **`docs/lab-03-step-by-step.md`**.
