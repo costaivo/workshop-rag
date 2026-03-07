@@ -1,97 +1,64 @@
 # Lab 03: RAG Chatbot (Streamlit) — Step-by-Step Guide
 
-This guide walks you through **lab-03**: a **Streamlit** chatbot that sends user questions to the **lab-02** RAG API (**POST /ask**) and displays the answers in a chat interface. No RAG logic lives in lab-03 — it is a thin client that connects to the API you built in lab-02.
+**Prerequisite:** Complete **lab-02** first. You should have the RAG pipeline running as a **CLI** and as a **FastAPI** server (**POST /ask**).
 
-The flow is: **prerequisites (lab-02 API running) → project setup → understand the app → run and test**.
+This lab adds a **Streamlit** chatbot in the **same folder as lab-02**. One project then gives you: CLI, API, and a browser-based chat UI that calls the API. No separate lab-03 directory or venv — keep it simple.
 
 ---
 
 ## Prerequisites
 
-Before starting lab-03, ensure:
-
-- **Lab-02** is set up and the **RAG API** can be started (see **`docs/lab-02-step-by-step.md`**).
-- The **lab-02 API** is **running** when you use the chatbot. Start it in a separate terminal:
-
-  ```bash
-  cd lab-02
-  uvicorn api:app --reload
-  ```
-
-  The chatbot expects the API at **http://127.0.0.1:8000** by default. You can change this with the **`RAG_API_URL`** environment variable (see Phase 3).
+- **Lab-02 completed** — Working RAG API (`uvicorn api:app --reload`).
+- When you use the chatbot, the **lab-02 API must be running** in another terminal (same as now).
 
 ---
 
-## Phase 1: Project Setup
+## Phase 1: Add dependencies and the chatbot file
 
-Create the lab-03 directory, virtual environment, and install dependencies.
+Stay in your **lab-02** directory. Add the UI dependencies and one new file.
 
-### 1.1 Create the project directory
+### 1.1 Update requirements.txt
 
-Use the existing `lab-03` folder or create one:
-
-```bash
-mkdir lab-03
-cd lab-03
-```
-
-### 1.2 Set up a virtual environment
-
-```bash
-python -m venv venv
-
-# Activate it
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-```
-
-### 1.3 Dependencies
-
-Create a `requirements.txt` with the following (as in `lab-03/requirements.txt`):
+Append the following to your existing **`requirements.txt`**:
 
 ```text
+# Chatbot UI (lab-03)
 streamlit>=1.40.0
 requests>=2.32.0
 ```
 
-- **streamlit** — Builds the chat UI (messages, input, session state).
-- **requests** — HTTP client to call the lab-02 **POST /ask** endpoint.
+- **streamlit** — Chat UI (messages, input, session state).
+- **requests** — HTTP client to call **POST /ask**.
 
-Install them:
+Install the new packages (venv activated):
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 1.4 Project structure
+### 1.2 New file: chatbot.py
 
-Your folder should look like this:
-
-```text
-lab-03/
-├── app.py                # Streamlit chatbot (single file)
-├── requirements.txt
-└── README.md             # Quick run instructions
-```
+Create **`chatbot.py`** in the lab-02 folder. This is the only new code for lab-03; it will call your existing API.
 
 ---
 
-## Phase 2: How the Chatbot Works
+## Phase 2: Build the chatbot
 
-The app is a single Streamlit script that:
+The app is a single Streamlit script that: configures the API URL, calls **POST /ask** for each question, keeps chat history in session state, and shows a clear error if the API is not reachable.
 
-1. **Configures the API URL** — Uses `RAG_API_URL` from the environment, or defaults to `http://127.0.0.1:8000`. The request goes to `{API_URL}/ask`.
-2. **Calls the RAG API** — For each user message, sends **POST /ask** with `{"question": "..."}` and reads **`answer`** from the JSON response.
-3. **Keeps chat history** — Uses `st.session_state.messages` to show previous user and assistant messages.
-4. **Handles errors** — If the request fails (e.g. API not running), shows a short error and suggests starting the lab-02 API.
-
-### 2.1 API URL and request helper
+**Full `chatbot.py`** (including imports):
 
 ```python
+"""Streamlit chatbot that talks to the RAG API (POST /ask)."""
+
+import os
+import requests
+import streamlit as st
+
+# Default: API running in same project (lab-02)
 API_URL = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
 ASK_URL = f"{API_URL.rstrip('/')}/ask"
+
 
 def ask_api(question: str) -> str | None:
     """Call the RAG /ask endpoint. Returns answer or None on error."""
@@ -103,37 +70,60 @@ def ask_api(question: str) -> str | None:
         )
         r.raise_for_status()
         return r.json()["answer"]
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         return None
+
+
+st.set_page_config(page_title="RAG Chatbot", page_icon="💬", layout="centered")
+st.title("💬 RAG Chatbot")
+st.caption(f"Connected to: `{ASK_URL}` — change via `RAG_API_URL` env var.")
+
+# Chat history in session state
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Show previous messages
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# New message input
+if prompt := st.chat_input("Ask a question..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            answer = ask_api(prompt)
+        if answer is not None:
+            st.markdown(answer)
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+        else:
+            err = "Could not reach the RAG API. Start it in another terminal: `uvicorn api:app --reload`"
+            st.error(err)
+            st.session_state.messages.append({"role": "assistant", "content": err})
 ```
 
-- **Success:** Returns the answer string from the API.
-- **Failure:** Returns `None` (connection error, timeout, or non-2xx response).
+**What this does:**
 
-### 2.2 Page config and chat state
-
-- **Page:** Title “RAG Chatbot”, caption shows the current `ASK_URL` and mentions `RAG_API_URL`.
-- **Session state:** `st.session_state.messages` is a list of `{"role": "user"|"assistant", "content": "..."}`. It is initialized once and appended to on each turn.
-
-### 2.3 Rendering and input
-
-- **History:** Loop over `messages` and render each with `st.chat_message(role)` and `st.markdown(content)`.
-- **Input:** `st.chat_input("Ask a question...")`. When the user sends a message:
-  - Append it to `messages` with role `"user"` and display it.
-  - Call `ask_api(prompt)` in an assistant bubble with `st.spinner("Thinking...")`.
-  - If the result is not `None`, show the answer and append it to `messages` as `"assistant"`.
-  - If the result is `None`, show an error (e.g. “Could not reach the RAG API…”) and append that as the assistant message so the user knows to start lab-02.
+- **Imports** — `os` for env, `requests` for HTTP, `streamlit` for the UI.
+- **API URL** — `RAG_API_URL` from the environment, or default `http://127.0.0.1:8000`. Requests go to `{API_URL}/ask`.
+- **`ask_api(question)`** — POSTs `{"question": question}`, returns the answer string or `None` on failure (connection error, timeout, or non-2xx).
+- **Page** — Title “RAG Chatbot”, caption shows the URL in use.
+- **Session state** — `st.session_state.messages` holds `{"role": "user"|"assistant", "content": "..."}`; history is rendered above the input.
+- **Input** — On each user message: append to history, call `ask_api` in an assistant bubble with “Thinking…”, then show the answer or an error telling the user to start the API.
 
 ---
 
-## Phase 3: Run and Test
+## Phase 3: Run and test
 
-### 3.1 Start the lab-02 API (if not already running)
+### 3.1 Start the API (if not already running)
 
-In one terminal:
+In one terminal, from the **lab-02** directory (venv activated):
 
 ```bash
-cd lab-02
 uvicorn api:app --reload
 ```
 
@@ -141,38 +131,37 @@ Leave it running.
 
 ### 3.2 Start the chatbot
 
-In another terminal, from the repo root or from `lab-03`:
+In another terminal, same **lab-02** directory (venv activated):
 
 ```bash
-cd lab-03
-streamlit run app.py
+streamlit run chatbot.py
 ```
 
-Your browser should open the Streamlit app. You should see the title “RAG Chatbot” and the caption with the API URL.
+The browser opens the Streamlit app. You should see “RAG Chatbot” and the caption with the API URL.
 
 ### 3.3 Use the chat
 
-- Type a question in the input box and press Enter.
-- The app sends **POST /ask** to the lab-02 API and displays the returned answer.
-- Ask follow-up questions; the conversation history is shown above the input.
+- Type a question and press Enter.
+- The app sends **POST /ask** to the API and shows the answer.
+- Ask follow-up questions; history stays visible above the input.
 
-### 3.4 Using a different API URL
+### 3.4 Different API URL
 
-If the RAG API runs on another host or port:
+If the API runs on another host or port:
 
 ```bash
 export RAG_API_URL=http://localhost:8000   # or your API base URL
-streamlit run app.py
+streamlit run chatbot.py
 ```
 
 The caption in the app shows the URL in use.
 
 ### 3.5 If the API is not reachable
 
-If you see an error like “Could not reach the RAG API”, check:
+If you see “Could not reach the RAG API”:
 
-- The lab-02 server is running (`uvicorn api:app --reload` in `lab-02`).
-- The URL is correct (default `http://127.0.0.1:8000`; override with `RAG_API_URL` if needed).
+- Start the API in another terminal: `uvicorn api:app --reload` (from the lab-02 directory).
+- If the API is elsewhere, set `RAG_API_URL` to the correct base URL.
 
 ---
 
@@ -180,8 +169,8 @@ If you see an error like “Could not reach the RAG API”, check:
 
 | Phase | What you did |
 |-------|----------------|
-| **1** | Project directory, venv, `requirements.txt` (Streamlit, requests) |
-| **2** | Understood the app: API URL, `ask_api`, session state, chat UI, error handling |
-| **3** | Started lab-02 API, ran `streamlit run app.py`, tested the chat and optional `RAG_API_URL` |
+| **1** | Added `streamlit` and `requests` to lab-02 `requirements.txt`; created `chatbot.py` |
+| **2** | Implemented `chatbot.py`: API URL, `ask_api`, session state, chat UI, error handling |
+| **3** | Ran API in one terminal (`uvicorn api:app --reload`), chatbot in another (`streamlit run chatbot.py`) |
 
-You now have a browser-based RAG chatbot that uses the lab-02 API for every answer. For full lab-02 setup and API details, see **`docs/lab-02-step-by-step.md`**.
+You now have the RAG pipeline available as CLI, API, and a browser chatbot — all from the **lab-02** folder. For lab-02 setup, see **`docs/lab-02-step-by-step.md`**.
