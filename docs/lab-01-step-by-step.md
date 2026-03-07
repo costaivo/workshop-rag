@@ -21,7 +21,7 @@ Create the project directory, virtual environment, and install dependencies.
 
 ### 1.1 Create the project directory
 
-Use an existing folder (e.g. `lab-01`) or create one:
+create a new folder:
 
 ```bash
 mkdir rag-lab
