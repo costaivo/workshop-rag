@@ -101,15 +101,15 @@ That’s how we “find the right page” by meaning, not only by keywords.
 ```
   YOU HAVE                    ONE-TIME SETUP
   ┌─────────────┐             ┌──────────────────────────────────┐
-  │  Documents  │  ─────────► │  Chunk  →  Embed  →  Search index  │
-  │  (.txt etc)│             └──────────────────────────────────┘
+  │  Workshop   │  ─────────► │  Chunk  →  Embed  →  Search index  │
+  │  materials  │             └──────────────────────────────────┘
   └─────────────┘                              │
                                                 │
   YOU ASK A QUESTION                             │
   ┌─────────────┐             ┌─────────────────▼─────────────────┐
-  │  "What's    │  ─────────► │  Embed question  →  Search index   │
-  │  the refund │             │  → Get top chunks (the "right      │
-  │  policy?"   │             │    pages")                         │
+  │  "What's the│  ─────────► │  Embed question  →  Search index   │
+  │  workshop   │             │  → Get top chunks (the "right      │
+  │  schedule?" │             │    pages")                         │
   └─────────────┘             └─────────────────┬─────────────────┘
                                                 │
                                                 ▼
@@ -117,7 +117,7 @@ That’s how we “find the right page” by meaning, not only by keywords.
   ┌─────────────┐               │  Model reads: question + chunks   │
   │  "According │  ◄─────────── │  Model writes: answer (only from  │
   │  to the     │               │  that context)                    │
-  │  policy..." │               └──────────────────────────────────┘
+  │  agenda..." │               └──────────────────────────────────┘
   └─────────────┘
 ```
 
@@ -125,15 +125,15 @@ That’s how we “find the right page” by meaning, not only by keywords.
 
 ## Why is this useful?
 
-- **Up-to-date:** Add new documents and re-run the preparation step; the system can answer from the latest info.
-- **Your data only:** The model doesn’t need to have seen your notes or policies before; you provide them at answer time.
-- **Less guessing:** By insisting “use only this text,” you reduce made-up or off-topic answers.
-- **Reusable:** Same idea works for course notes, support docs, internal wikis, etc.
+- **Up-to-date:** Add new session materials and re-run the preparation step; the system can answer from the latest agenda or speaker list.
+- **Your data only:** The model doesn’t need to have seen your workshop agenda or speaker bios before; you provide them at answer time.
+- **Less guessing:** By insisting “use only this text,” you reduce made-up or off-topic answers (e.g. wrong session times or speaker names).
+- **Reusable:** Same idea works for any event (workshops, conferences), course notes, support docs, internal wikis, etc.
 
 ---
 
 ## One-sentence summary
 
-**RAG means: when someone asks a question, you search your own documents for the most relevant pieces, then ask an AI to answer using only those pieces—so the answer comes from your content, not from the model’s memory.**
+**RAG means: when someone asks a question (e.g. about the workshop schedule or speakers), you search your own documents for the most relevant pieces, then ask an AI to answer using only those pieces—so the answer comes from your content, not from the model’s memory.**
 
 If you’re ready for the technical version (code and pipeline details), see **rag-tutorial-basic.md**.
