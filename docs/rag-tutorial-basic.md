@@ -1,186 +1,172 @@
-# RAG Tutorial: Basic Pipeline (rag.py)
+# RAG Tutorial: Basic Pipeline
 
-**Structure:** Part 1 gives a high-level understanding in blocks. Part 2 goes into detailed steps, code references, and diagrams.
+This tutorial is in **three parts**: a short overview with diagrams, a high-level view of the steps (mapped to lab-01), and a detailed walkthrough of each step and the code.
 
 ---
 
-## Part 1 — High level
+## 1) Overview
 
-### Overview: RAG in blocks
+RAG (Retrieval-Augmented Generation) means: instead of asking the LLM to answer from memory alone, you **search your own documents** and **give the model only the relevant bits** when it answers. Below is how that differs from a normal LLM, in simple flows.
 
-Think of RAG as a few connected blocks. Each block has one job; together they let the LLM answer from *your* documents instead of only its training data.
+### How a normal LLM works
 
-| Block | What it is | What it does |
-|-------|------------|---------------|
-| **1. Your documents** | The raw content (e.g. `.txt` files in a folder). | Source of truth. Everything the system “knows” comes from here. |
-| **2. Indexing** | A one-time preparation step. | Documents are split into chunks, turned into vectors (embeddings), and stored in a search index. After this, the system can find “which chunks are similar to a question?” |
-| **3. Query** | The user’s question. | Same as any search: user asks something in natural language. |
-| **4. Retrieval** | Search over the index. | The question is turned into a vector; the index returns the few chunks most similar to that vector. Those chunks are the only context the LLM will see. |
-| **5. Generation** | The LLM’s reply. | The model gets the question plus the retrieved chunks and produces an answer using *only* that context. |
-
-**In one line:** Index your docs once → for each question, retrieve the best chunks → send chunks + question to the LLM → get an answer.
+The user asks a question; the model answers from what it was trained on. No search, no your-docs context.
 
 ```mermaid
 flowchart LR
-    subgraph Ingest
-        A[Load .txt files] --> B[Chunk text]
-        B --> C[Embed chunks]
-        C --> D[FAISS index]
-    end
-    subgraph Query
-        Q[User question] --> E[Embed query]
-        E --> F[Search index]
-        F --> G[Top-K chunks]
-        G --> H[LLM + context]
-        H --> A2[Answer]
-    end
+    A[User Query] --> B[LLM]
+    B --> C[Answer]
 ```
 
----
+### How RAG works
 
-### High-level process flow
+You do a **one-time setup**: ingest your documents into a **vector store** (searchable index). Then, for each question, you **search** that store, and send the **search results plus the question** to the LLM. The answer is based on your documents, not only on the model’s training.
 
 ```mermaid
 flowchart TB
-    subgraph "1. Ingestion (once at startup)"
-        F1[data/*.txt] --> Load
-        Load[load_text_files] --> Chunk[chunk_text]
-        Chunk --> Embed1[embed_texts]
-        Embed1 --> Index[create_faiss_index]
+    subgraph Setup["One-time setup"]
+        D[Your documents] --> I[Ingest into Vector DB]
     end
 
-    subgraph "2. Query loop (per question)"
-        User[User question] --> Embed2[embed query]
-        Embed2 --> Search[FAISS search]
-        Search --> TopK[Top-K chunks]
-        TopK --> Prompt[Build prompt with context]
-        Prompt --> LLM[generate_content]
-        LLM --> Answer[Print answer]
+    subgraph Query["Per question"]
+        A[User Query] --> S[Search in Vector DB]
+        S --> R[Search results]
+        R --> P[Pass results + Query to LLM]
+        P --> LLM[LLM]
+        LLM --> C[Answer]
     end
 
-    Index -.-> Search
+    I -.-> S
 ```
+
+**In one line:** Ingest your docs once → for each question, search the vector DB → send retrieved text + question to the LLM → get an answer.
 
 ---
 
-## Part 2 — Detailed
+## 2) High Level
 
-Below is a step-by-step walkthrough of each part of the pipeline and how it appears in code.
+RAG breaks down into a few steps. Here they are as blocks, and how they map to **lab-01** (see [lab-01-step-by-step.md](lab-01-step-by-step.md) for the full flow and setup).
 
-### 1. Load documents (`load_text_files`)
+| Step | What it does | In lab-01 |
+|------|----------------|-----------|
+| **Ingestion** | Load documents, prepare them, and build a searchable index. Run **once** at startup. | `ingestion.py`: `run_ingestion("data", client)` loads `data/*.txt`, chunks and embeds them, builds a FAISS index. |
+| **Retrieval** | For each user question, search the index and return the most relevant pieces of text. | `retrieval.py`: `retrieve(query, index, chunks, client)` embeds the query, searches the index, returns top-K chunks. |
+| **Generation** | Take the retrieved chunks + the question, send them to the LLM, return the answer. | `generation.py`: `generate_answer(query, retrieved_chunks, client)` builds a prompt and calls the LLM. |
+| **Answer** | The LLM’s reply, grounded in the retrieved context. | Printed in the main loop in `app.py`. |
 
-**Purpose:** Read all plain-text content from a folder so it can be chunked and embedded.
+High-level flow in blocks:
 
-**What the code does:**
+```mermaid
+flowchart LR
+    subgraph Ingest["Ingestion (once)"]
+        A[Documents] --> B[Prepare & index]
+    end
 
-- Scans the given folder (e.g. `data/`) for filenames ending in `.txt`.
-- Opens each file with UTF-8 encoding and appends its full text to a list.
-- Returns a list of strings (one string per file).
+    subgraph Query["Per question"]
+        Q[User question] --> R[Retrieval]
+        R --> G[Generation]
+        G --> Ans[Answer]
+    end
 
-**Flow:**
+    B -.-> R
+```
+
+**In lab-01:**
+
+- **`app.py`** — Loads config, runs `run_ingestion("data", client)` once, then loops: read question → `retrieve(...)` → `generate_answer(...)` → print answer.
+- **`ingestion.py`** — Load files, chunk, embed, build FAISS index (see [lab-01-step-by-step.md](lab-01-step-by-step.md) Phase 4).
+- **`retrieval.py`** — Embed query, search index, return top-K chunks (Phase 5).
+- **`generation.py`** — Build prompt from chunks + question, call Gemini, return text (Phase 6).
+
+We do **not** go into how chunking or vectors work here; that’s in **Section 3 (Detailed)**.
+
+---
+
+## 3) Detailed
+
+This section goes step-by-step through each part of the pipeline and how it appears in the **lab-01** code (and in the older single-file `rag.py` style where relevant). Here we explain chunking, embeddings, and the vector index.
+
+### 3.1 Load documents
+
+**Purpose:** Read all `.txt` files from a folder so they can be chunked and embedded.
+
+**What the code does:** Scans the folder (e.g. `data/`), opens each `.txt` with UTF-8, appends its text to a list. Returns a list of strings (one per file). No chunking or embedding yet.
+
+**In lab-01:** `ingestion.py` → `load_text_files(folder_path)`.
 
 ```
 data/
-  refund-policy.txt   -->  "Full refund within 30 days..."
-  ivo-biography.txt   -->  "Ivo is a developer..."
+  workshop-schedule.txt   -->  "Day 1 — Introduction..."
+  ivo-biography.txt       -->  "Ivo is a developer..."
          |
          v
   documents = [doc1, doc2, ...]
 ```
 
-**Relevant code:** Lines 12–18 in `rag.py`. No embedding or chunking yet—only file I/O.
-
 ---
 
-### 2. Chunk text (`chunk_text`)
+### 3.2 Chunk text
 
-**Purpose:** Split long documents into smaller segments (chunks) so that:
+**Purpose:** Split long documents into smaller segments (chunks) so that each chunk fits embedding/model limits and retrieval returns focused passages. Overlap helps avoid cutting sentences in the middle.
 
-- Each chunk fits within embedding/model limits.
-- Retrieval returns focused passages instead of whole files.
-- Overlap reduces the risk of splitting important sentences in the middle.
+**What the code does:** Slides a window of `chunk_size` characters (e.g. 500) over the text; after each chunk, the window moves by `chunk_size - overlap` (e.g. 400), so consecutive chunks overlap (e.g. 100 characters). Returns a list of chunk strings.
 
-**What the code does:**
-
-- Slides a window of `chunk_size` characters (default 500) over the text.
-- After each chunk, the window moves forward by `chunk_size - overlap` (default 400), so consecutive chunks overlap by `overlap` characters (100).
-- Returns a list of strings (the chunks).
+**In lab-01:** `ingestion.py` → `chunk_text(text, chunk_size=500, overlap=100)`.
 
 **Parameters:**
 
-| Parameter     | Default | Meaning                          |
-|---------------|---------|----------------------------------|
-| `chunk_size`  | 500     | Length of each chunk in characters |
-| `overlap`     | 100     | Shared characters between consecutive chunks |
+| Parameter    | Default | Meaning |
+|-------------|---------|---------|
+| `chunk_size`| 500     | Length of each chunk in characters |
+| `overlap`   | 100     | Shared characters between consecutive chunks |
 
-**Overlap (ASCII):**
+**Overlap (concept):**
 
 ```
-Document: "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+Document: "Lorem ipsum dolor sit amet, consectetur..."
 
 Chunk 1:  [0    .............. 500]
 Chunk 2:        [400 .............. 900]   (overlap 100 chars)
 Chunk 3:              [800 .............. 1300]
 ```
 
-**Relevant code:** Lines 21–28. Called once per document in `main`; all chunks are concatenated into `all_chunks`.
-
 ---
 
-### 3. Embed texts (`embed_texts`)
+### 3.3 Embed texts
 
 **Purpose:** Turn each chunk into a fixed-size vector (embedding) so that semantically similar text has similar vectors and can be found by similarity search.
 
-**What the code does:**
+**What the code does:** For each chunk, calls the Gemini API `embed_content` with model `gemini-embedding-001`. Collects the returned vectors into a NumPy array, shape `(num_chunks, embedding_dim)`, cast to `float32` for FAISS.
 
-- For each chunk string, calls the Gemini API `embed_content` with model `gemini-embedding-001`.
-- The API returns one embedding per content item; the code takes `response.embeddings[0].values`.
-- Collects these into a NumPy array of shape `(num_chunks, embedding_dim)` and casts to `float32` for FAISS.
-
-**Conceptual flow:**
+**In lab-01:** `ingestion.py` → `embed_texts(all_chunks, client)`.
 
 ```
 Chunk 1  -->  API  -->  [0.12, -0.34, 0.56, ...]   (e.g. 768 dims)
 Chunk 2  -->  API  -->  [0.01,  0.22, -0.11, ...]
-...
          |
          v
   embeddings: shape (N, D)
 ```
 
-**Relevant code:** Lines 32–41. Used at ingest time for all chunks and at query time inside `retrieve` for the user question.
-
 ---
 
-### 4. Create FAISS index (`create_faiss_index`)
+### 3.4 Create vector index (FAISS)
 
 **Purpose:** Build a search structure so that, given a query vector, you can quickly find the K nearest chunk vectors (by L2 distance).
 
-**What the code does:**
+**What the code does:** Reads embedding dimension from `embeddings.shape[1]`, creates `faiss.IndexFlatL2(dimension)`, adds all chunk embeddings with `index.add(embeddings)`. Smaller L2 distance = more similar.
 
-- Reads the embedding dimension from `embeddings.shape[1]`.
-- Creates a `faiss.IndexFlatL2(dimension)` index (exact L2 search, no approximate search).
-- Adds all chunk embeddings with `index.add(embeddings)`.
-
-**Why FAISS:** Fast similarity search over many vectors; the script uses the CPU index (`faiss-cpu`). L2 distance is used as the similarity measure (smaller distance = more similar).
-
-**Relevant code:** Lines 44–48. Index is built once after `embed_texts(all_chunks)` and reused for every query.
+**In lab-01:** `ingestion.py` → `create_faiss_index(embeddings)`. Index is built once and reused for every query.
 
 ---
 
-### 5. Retrieve (`retrieve`)
+### 3.5 Retrieve
 
 **Purpose:** For a user question, get the K chunks whose embeddings are closest to the question’s embedding.
 
-**What the code does:**
+**What the code does:** (1) Embed the query with the same model as the chunks. (2) Reshape to a single row, `float32`. (3) Call `index.search(query_vector, top_k)`. (4) Use returned indices to pick the corresponding chunks. (5) Return the list of K chunk strings.
 
-1. Embed the query string with the same model and API as the chunks.
-2. Reshape the query embedding to a single row and cast to `float32`.
-3. Call `index.search(query_vector, top_k)` (default `top_k=3`).
-4. FAISS returns distances and indices; the code uses the indices to select the corresponding chunks from the `chunks` list.
-5. Returns a list of K chunk strings.
-
-**Flow:**
+**In lab-01:** `retrieval.py` → `retrieve(query, index, chunks, client, top_k=3)`.
 
 ```
 User query  -->  embed_content  -->  query_vector
@@ -195,20 +181,15 @@ User query  -->  embed_content  -->  query_vector
               [chunks[2], chunks[0], chunks[5]]
 ```
 
-**Relevant code:** Lines 51–61. Called once per user question in the main loop.
-
 ---
 
-### 6. Generate answer (`generate_answer`)
+### 3.6 Generate answer
 
-**Purpose:** Use the LLM to produce an answer that is grounded in the retrieved chunks only.
+**Purpose:** Have the LLM answer using **only** the retrieved chunks as context.
 
-**What the code does:**
+**What the code does:** Joins the retrieved chunks into one `context` string. Builds a prompt: “Answer using ONLY the context below” + context + question. Calls `client.models.generate_content` (e.g. `gemini-2.5-flash`) and returns the reply text.
 
-1. Joins the retrieved chunk strings with double newlines into a single `context` string.
-2. Builds a prompt that instructs the model to answer using only that context, plus the user’s question.
-3. Calls `client.models.generate_content` with model `gemini-2.5-flash` and the prompt.
-4. Returns `response.text` (the model’s reply).
+**In lab-01:** `generation.py` → `generate_answer(query, retrieved_chunks, client)`.
 
 **Prompt shape:**
 
@@ -220,63 +201,40 @@ Context:
 
 <chunk 2>
 
-<chunk 3>
-
 Question:
 <user query>
 ```
 
-**Relevant code:** Lines 64–84. Called after `retrieve` in the main loop.
-
 ---
 
-## Main Program Flow
+### 3.7 Main program flow
 
-The `if __name__ == "__main__"` block (lines 87–112) wires everything together:
+**In lab-01** (`app.py`): Load API key → run `run_ingestion("data", client)` once → loop: read question → `retrieve(...)` → `generate_answer(...)` → print answer. Exit when user types `exit`.
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant Main
-    participant Load
-    participant Chunk
-    participant Embed
-    participant FAISS
-    participant Retrieve
+    participant App
+    participant Ingestion
+    participant Retrieval
     participant LLM
 
-    User->>Main: run script
-    Main->>Load: load_text_files("data")
-    Load-->>Main: documents
-    Main->>Chunk: chunk_text(doc) for each doc
-    Chunk-->>Main: all_chunks
-    Main->>Embed: embed_texts(all_chunks)
-    Embed-->>Main: embeddings
-    Main->>FAISS: create_faiss_index(embeddings)
-    FAISS-->>Main: index
-    Main->>User: "Ready. Ask your question."
+    User->>App: run app
+    App->>Ingestion: run_ingestion("data", client)
+    Ingestion-->>App: (chunks, index)
+    App->>User: "Ready. Ask your question."
 
     loop For each question
-        User->>Main: query
-        Main->>Retrieve: retrieve(query, index, all_chunks)
-        Retrieve->>Embed: embed query
-        Retrieve->>FAISS: search
-        FAISS-->>Retrieve: indices
-        Retrieve-->>Main: retrieved chunks
-        Main->>LLM: generate_answer(query, chunks)
-        LLM-->>Main: answer
-        Main->>User: answer
+        User->>App: query
+        App->>Retrieval: retrieve(query, index, chunks, client)
+        Retrieval-->>App: retrieved chunks
+        App->>LLM: generate_answer(query, chunks, client)
+        LLM-->>App: answer
+        App->>User: answer
     end
 ```
 
-**Step-by-step:**
-
-1. **Ingest:** Load all `.txt` from `data/` → chunk each document → embed all chunks → build FAISS index.
-2. **Loop:** Read a question from the user; if "exit", stop. Otherwise: retrieve top-K chunks, call `generate_answer`, print the answer, then prompt again.
-
----
-
-## Data Flow Summary (ASCII)
+**Data flow (ASCII):**
 
 ```
                     INGESTION
@@ -285,7 +243,7 @@ sequenceDiagram
   │ files   │    │ (500/100)│    │ (API)   │    │ index   │
   └─────────┘    └─────────┘    └─────────┘    └────┬────┘
                                                      │
-                    QUERY                             │
+                    QUERY                            │
   ┌─────────┐    ┌─────────┐    ┌─────────┐          │
   │ User    │ -> │ Embed   │ -> │ Search  │ <────────┘
   │ question│    │ query   │    │ index   │
@@ -300,16 +258,16 @@ sequenceDiagram
 
 ---
 
-## Environment and Dependencies
+### Environment and dependencies
 
-- **API key:** Set `GOOGLE_API_KEY` in `.env` (or environment). Used for both embedding and generate APIs.
-- **Dependencies:** See `requirements.txt`—notably `numpy`, `faiss-cpu`, `python-dotenv`, and `google-genai`.
+- **API key:** Set `GOOGLE_API_KEY` in `.env` (or environment). Used for both embedding and generation.
+- **Dependencies:** See `lab-01/requirements.txt` — e.g. `numpy`, `faiss-cpu`, `python-dotenv`, `google-genai`.
 
-Run the pipeline:
+Run the pipeline (from `lab-01/`):
 
 ```bash
 pip install -r requirements.txt
-python rag.py
+python app.py
 ```
 
-After "Ready. Ask your question.", type a question (e.g. about your refund policy or biography); the script will retrieve relevant chunks and answer using only that context.
+After “Ready. Ask your question.”, try questions that match your documents (e.g. workshop schedule or speaker info); the system retrieves relevant chunks and answers using only that context. See [lab-01-step-by-step.md](lab-01-step-by-step.md) for full setup and example questions.
