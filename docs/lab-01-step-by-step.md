@@ -133,9 +133,26 @@ Topics: Overview of React & why it's used, Component‑based architecture...
 ```
 
 **Example:** `data/workshop_speakers.txt` — a multi-day workshop schedule (e.g. React, topics, timings):
+```text
+📅 4‑Day Workshop Schedule 
+
+Day 1 — Introduction to React & Component-Based Development
+Speaker: Joshua Pereira , Nikesh Singh
+10:30 – 12:00 — Introduction & Setup
+12:00 – 12:40 — React Basics
+```
+
 **Example:** `data/ivo-biography.txt` — a biography or any other `.txt` file.
+```text
+# Ivo Costa - Professional Biography
+Linkedin Profile : https://www.linkedin.com/in/ivo-costa/
+
+## Overview
+Ivo Costa is the **Director of Development Services at Creative Capsule**, based in South Goa, India.
+```
 
 You can add as many `.txt` files as you like; the ingestion step will load and index all of them.
+
 > **NOTE:** The contents for the file can be found at location [Lab-01](https://github.com/costaivo/workshop-rag/tree/main/lab-01/data)
 
 ---
