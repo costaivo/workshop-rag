@@ -37,3 +37,9 @@ Each lab builds on the previous one:
 3. Put your `.txt` documents in that lab’s `data/` folder (for labs that use local files), set your API key in `.env`, then run ingestion and the app as described in the doc.
 
 For the first-time RAG flow, start with [Lab 01](docs/lab-01-step-by-step.md) and the [simplified RAG overview](docs/rag-simplified.md).
+
+---
+
+## Student feedback
+
+After completing the labs, please share your feedback via this form: **[Code to Career – Student responses](https://forms.gle/9xwsrGPbPmkWr7ea7)**.
