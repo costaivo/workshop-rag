@@ -132,7 +132,7 @@ Day 1 — Introduction to React & Component-Based Development
 Topics: Overview of React & why it's used, Component‑based architecture...
 ```
 
-**Example:** `data/workshop_speakers.txt` — a multi-day workshop schedule (e.g. React, topics, timings):
+**Example:** []`data/workshop_speakers.txt`](https://github.com/costaivo/workshop-rag/blob/main/lab-01/data/workshop_speakers.txt) — a multi-day workshop schedule (e.g. React, topics, timings):
 ```text
 📅 4‑Day Workshop Schedule 
 
