@@ -132,9 +132,11 @@ Day 1 — Introduction to React & Component-Based Development
 Topics: Overview of React & why it's used, Component‑based architecture...
 ```
 
+**Example:** `data/workshop_speakers.txt` — a multi-day workshop schedule (e.g. React, topics, timings):
 **Example:** `data/ivo-biography.txt` — a biography or any other `.txt` file.
 
 You can add as many `.txt` files as you like; the ingestion step will load and index all of them.
+> **NOTE:** The contents for the file can be found at location [Lab-01](https://github.com/costaivo/workshop-rag/tree/main/lab-01/data)
 
 ---
 

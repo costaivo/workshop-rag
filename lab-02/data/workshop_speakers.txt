@@ -1,0 +1,37 @@
+
+📅 4‑Day Workshop Schedule 
+
+Day 1 — Introduction to React & Component-Based Development
+Speaker: Joshua Pereira , Nikesh Singh
+10:30 – 12:00 — Introduction & Setup
+12:00 – 12:40 — React Basics
+12:40 – 1:00 — State & Events
+1:00 – 2:00 — Lunch Break
+2:00 – 2:40 — Lists, Keys & Forms
+2:40 – 3:20 — useEffect & Fetching Data
+3:20 – 4:00 — Mini Project
+4:00 – 4:30 — Wrap‑Up & Q&A
+
+
+Day 2 — Full‑Stack React: Backend Integration & Best Practices
+Speaker: Joshua Pereira , Nikesh Singh
+10:00 – 11:15 — Git (Talk & Hands‑On)
+11:30 – 1:00 — Backend Setup & Connecting to React
+2:00 – 3:00 — Consuming Data in React + CRUD
+3:00 – 4:00 — Testing API & CRUD with Postman
+
+
+Day 3 — Modern Development Workflows & Cross‑Platform Apps
+Speaker: Joshua Pereira , Nikesh Singh
+10:00 – 11:15 — CI/CD & GitHub Actions
+11:30 – 1:00 — Docker & Containerization Basics
+2:00 – 3:30 — React Native (Demonstration)
+3:30 – 4:00 — Wrap‑Up & Q&A
+
+
+Day 4 — AI in Industry
+Speaker : Ivo Costa 
+10:00 – 11:00 — Real World Usage & Case Studies
+11:00 – 11:15 — Types of AI Used in Software Products
+11:30 – 1:00 — Live Demonstration: RAG System
+
