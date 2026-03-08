@@ -121,7 +121,7 @@ You will use this `client` for both embedding (ingestion and retrieval) and gene
 
 Place the documents you want the RAG system to answer from in the `data/` folder. The pipeline reads all **`.txt`** files in that folder.
 
-**Example:** `data/workshop-schedule.txt` — a multi-day workshop schedule (e.g. React, topics, timings):
+**Example:** [`data/workshop-schedule.txt`](https://github.com/costaivo/workshop-rag/blob/main/lab-01/data/workshop-schedule.txt) — a multi-day workshop schedule (e.g. React, topics, timings):
 
 ```text
 📅 4‑Day Workshop Schedule
@@ -142,7 +142,7 @@ Speaker: Joshua Pereira , Nikesh Singh
 12:00 – 12:40 — React Basics
 ```
 
-**Example:** `data/ivo-biography.txt` — a biography or any other `.txt` file.
+**Example:** [`data/ivo-biography.txt`](lab-01/data/ivo-biography.txt) — a biography or any other `.txt` file.
 ```text
 # Ivo Costa - Professional Biography
 Linkedin Profile : https://www.linkedin.com/in/ivo-costa/
